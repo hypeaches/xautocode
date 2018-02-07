@@ -7,6 +7,7 @@ public:
     static void Parse(int argc, char* argv[]);
     static const char* header;
     static const char* source;
+    static const char* ext;
 };
 
 #endif // XAUTOCODE_COMMANDLINE_H
