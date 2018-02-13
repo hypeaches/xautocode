@@ -7,10 +7,13 @@ class FileStrategy
 {
 public:
     virtual ~FileStrategy();
-    virtual void Work();
+    void Work();
 
 protected:
-    virtual void GetFile(std::string& header_file, std::string& source_file);
+    virtual bool GetFile(std::string& header_file, std::string& source_file);
+    virtual bool GetNextHeaderFile(std::string& header_file);
+    virtual void GetHeaderFileRegularPath(const std::string& header_file, std::string& regular_path);
+    virtual void GetSourceFile(const std::string& header_regular_path, const std::string& header_file_name, std::string& source_file);
 };
 
 #endif

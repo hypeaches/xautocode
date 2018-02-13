@@ -11,7 +11,7 @@ public:
     virtual void Work();
 
 protected:
-    virtual void GetFile(std::string& header_file, std::string& source_file);
+    virtual bool GetFile(std::string& header_file, std::string& source_file);
 };
 
 #endif // XAUTOCODE_FILESTRATEGY_HEADERFILESOURCEDIRSTRATEGY_H
