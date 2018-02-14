@@ -6,6 +6,7 @@
 #include <boost/program_options.hpp>
 
 bool        CommandLine::recursive      = false;
+const char* CommandLine::include_prefix = nullptr;
 const char* CommandLine::header         = nullptr;
 const char* CommandLine::source         = nullptr;
 const char* CommandLine::ext            = nullptr;
@@ -15,6 +16,7 @@ int         CommandLine::left_brace_pos = 0;
 namespace {
     boost::program_options::options_description desc("Options");
     bool        cmd_recursive = false;
+    std::string cmd_include_prefix("");
     std::string cmd_header("");
     std::string cmd_source("");
     std::string cmd_ext("");
@@ -29,6 +31,7 @@ void CommandLine::Parse(int argc, char* argv[])
     desc.add_options()
         ("help", "帮助")
         ("recursive,r", boost::program_options::value<bool>(), "是否递归遍历header，默认值：false")
+        ("include-prefix", boost::program_options::value<std::string>(), "头文件相对目录，默认值：空")
         ("header", boost::program_options::value<std::string>(), "指定头文件")
         ("source", boost::program_options::value<std::string>(), "指定源文件")
         ("ext", boost::program_options::value<std::string>(), "源文件后缀名，默认值：cpp")
@@ -52,6 +55,14 @@ void CommandLine::Parse(int argc, char* argv[])
     else if (vm.count("r"))
     {
         cmd_recursive = vm["r"].as<bool>();
+    }
+    if (vm.count("include-prefix"))
+    {
+        cmd_include_prefix = vm["include-prefix"].as<std::string>();
+        if (!cmd_include_prefix.empty() && (cmd_include_prefix.back() != '/'))
+        {
+            cmd_include_prefix.append("/");
+        }
     }
     if (vm.count("header"))
     {
@@ -80,6 +91,7 @@ void CommandLine::Parse(int argc, char* argv[])
 void  InitCommandLine()
 {
     CommandLine::recursive = cmd_recursive;
+    CommandLine::include_prefix = cmd_include_prefix.c_str();
     CommandLine::header = cmd_header.c_str();
     CommandLine::source = cmd_source.c_str();
     CommandLine::ext = cmd_ext.c_str();

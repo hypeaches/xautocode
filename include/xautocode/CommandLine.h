@@ -7,6 +7,8 @@ public:
     static void Parse(int argc, char* argv[]);
     /// 若header是一个目录，是否递归遍历其所有子目录。默认值：false
     static bool recursive;
+    /// 源文件包含头文件时，头文件相对路径。默认值：空
+    static const char* include_prefix;
     /// 头文件名或头文件目录
     static const char* header;
     /// 源文件名或源文件目录
