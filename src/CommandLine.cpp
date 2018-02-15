@@ -6,11 +6,11 @@
 #include <boost/program_options.hpp>
 
 bool        CommandLine::recursive      = false;
-const char* CommandLine::include_prefix = nullptr;
-const char* CommandLine::header         = nullptr;
-const char* CommandLine::source         = nullptr;
-const char* CommandLine::ext            = nullptr;
-const char* CommandLine::newline        = nullptr;
+const char* CommandLine::include_prefix = NULL;
+const char* CommandLine::header         = NULL;
+const char* CommandLine::source         = NULL;
+const char* CommandLine::ext            = NULL;
+const char* CommandLine::newline        = NULL;
 int         CommandLine::left_brace_pos = 0;
 
 namespace {
@@ -19,7 +19,7 @@ namespace {
     std::string cmd_include_prefix("");
     std::string cmd_header("");
     std::string cmd_source("");
-    std::string cmd_ext("");
+    std::string cmd_ext(".cpp");
     std::string cmd_newline("\n");
     int         cmd_left_brace_pos = 0;
 }
@@ -34,7 +34,7 @@ void CommandLine::Parse(int argc, char* argv[])
         ("include-prefix", boost::program_options::value<std::string>(), "头文件相对目录，默认值：空")
         ("header", boost::program_options::value<std::string>(), "指定头文件")
         ("source", boost::program_options::value<std::string>(), "指定源文件")
-        ("ext", boost::program_options::value<std::string>(), "源文件后缀名，默认值：cpp")
+        ("ext", boost::program_options::value<std::string>(), "源文件后缀名，默认值：.cpp")
         ("newline",boost::program_options::value<std::string>(), "换行符LF(\\n)或CRFL(\\r\\n)，默认值：LF")
         ("left-brace-pos",boost::program_options::value<int>(), "左花括号位置，与函数签名在同一行(0)或另起一行(1)，默认值：0");
 
@@ -67,14 +67,26 @@ void CommandLine::Parse(int argc, char* argv[])
     if (vm.count("header"))
     {
         cmd_header = vm["header"].as<std::string>();
+        if (!cmd_header.empty() && (cmd_header.back() != '/'))
+        {
+            cmd_header.append("/");
+        }
     }
     if (vm.count("source"))
     {
         cmd_source = vm["source"].as<std::string>();
+        if (!cmd_source.empty() && (cmd_source.back() != '/'))
+        {
+            cmd_source.append("/");
+        }
     }
     if (vm.count("ext"))
     {
         cmd_ext = vm["ext"].as<std::string>();
+        if (!cmd_ext.empty() && (cmd_ext[0] != '.'))
+        {
+            cmd_ext = "." + cmd_ext;
+        }
     }
     if (vm.count("newline"))
     {
