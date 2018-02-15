@@ -26,7 +26,13 @@ FileStrategy* FileStrategy::GetStrategy()
     FileStrategy* strategy = nullptr;
     if (is_header_dir && is_source_dir)
     {
-        strategy = &headerdir_sourcedir_recursive_strategy;
+        if (CommandLine::recursive)
+        {
+            strategy = &headerdir_sourcedir_recursive_strategy;
+        }
+        else
+        {
+        }
     }
 
     return strategy;
