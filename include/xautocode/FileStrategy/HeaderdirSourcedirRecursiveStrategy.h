@@ -1,10 +1,11 @@
-#ifndef XAUTOCODE_FILESTRATEGY_HEADERDIRSOURCEDIRSTRATEGY_H
-#define XAUTOCODE_FILESTRATEGY_HEADERDIRSOURCEDIRSTRATEGY_H
+#ifndef XAUTOCODE_FILESTRATEGY_HEADERDIRSOURCEDIRRECURSIVESTRATEGY_H
+#define XAUTOCODE_FILESTRATEGY_HEADERDIRSOURCEDIRRECURSIVESTRATEGY_H
 
 #include <boost/filesystem.hpp>
 #include <xautocode/FileStrategy/FileStrategy.h>
+#include <xautocode/FileStrategy/SourcedirStrategy.h>
 
-class HeaderdirSourcedirRecursiveStrategy : public FileStrategy
+class HeaderdirSourcedirRecursiveStrategy : public FileStrategy, public SourcedirStrategy
 {
 public:
     virtual void Init();
@@ -18,4 +19,4 @@ private:
     boost::filesystem::recursive_directory_iterator _it_end;
 };
 
-#endif // XAUTOCODE_FILESTRATEGY_HEADERDIRSOURCEDIRSTRATEGY_H
+#endif // XAUTOCODE_FILESTRATEGY_HEADERDIRSOURCEDIRRECURSIVESTRATEGY_H

@@ -5,6 +5,7 @@ void HeaderdirSourcedirRecursiveStrategy::Init()
 {
     _it = boost::filesystem::recursive_directory_iterator(CommandLine::header);
     _it_end = boost::filesystem::recursive_directory_iterator();
+    GetSourceRelativePath();
 }
 
 bool HeaderdirSourcedirRecursiveStrategy::GetNextHeaderFile(std::string& header_file)
@@ -31,8 +32,7 @@ bool HeaderdirSourcedirRecursiveStrategy::GetNextHeaderFile(std::string& header_
 bool HeaderdirSourcedirRecursiveStrategy::GetNextSourceFile(const std::string& header_file, std::string& source_file)
 {
     source_file.clear();
-    size_t cmd_header_len = strlen(CommandLine::header);
-    std::string relative = header_file.substr(cmd_header_len, header_file.size() - cmd_header_len - 2);
+    std::string relative = header_file.substr(_source_relative_path.size(), header_file.size() - _source_relative_path.size() - 2);
     source_file.append(CommandLine::source).append(relative).append(CommandLine::ext);
     bool ret = !boost::filesystem::exists(source_file);
     return ret;
