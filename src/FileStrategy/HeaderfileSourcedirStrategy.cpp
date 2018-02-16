@@ -32,3 +32,15 @@ bool HeaderfileSourcedirStrategy::GetNextSourceFile(const std::string& header_fi
     return ret;
 }
 
+bool HeaderfileSourcedirStrategy::GetIncludeString(const std::string& header_file, std::string& include_string)
+{
+    include_string.clear();
+    size_t ind = header_file.find_last_of('/');
+    if ((ind == std::string::npos) || (ind >= header_file.size() - 1))
+    {
+        throw std::logic_error("parse include string failed");
+    }
+    include_string.append(header_file.substr(ind + 1));
+    return true;
+}
+

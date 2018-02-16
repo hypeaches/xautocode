@@ -23,3 +23,15 @@ bool HeaderfileSourcefileStrategy::GetNextSourceFile(const std::string& header_f
     bool ret = !boost::filesystem::exists(source_file);
     return ret;
 }
+
+bool HeaderfileSourcefileStrategy::GetIncludeString(const std::string& header_file, std::string& include_string)
+{
+    include_string.clear();
+    size_t ind = header_file.find_last_of('/');
+    if ((ind == std::string::npos) || (ind >= header_file.size() - 1))
+    {
+        throw std::logic_error("parse include string failed");
+    }
+    include_string.append(header_file.substr(ind + 1));
+    return true;
+}
