@@ -6,6 +6,7 @@
 #include <xautocode/FileStrategy/HeaderdirSourcedirRecursiveStrategy.h>
 #include <xautocode/FileStrategy/HeaderdirSourcefileStrategy.h>
 #include <xautocode/FileStrategy/HeaderfileSourcedirStrategy.h>
+#include <xautocode/FileStrategy/HeaderfileSourcefileStrategy.h>
 
 namespace
 {
@@ -13,6 +14,7 @@ HeaderdirSourcedirStrategy          headerdir_sourcedir_strategy;
 HeaderdirSourcedirRecursiveStrategy headerdir_sourcedir_recursive_strategy;
 HeaderdirSourcefileStrategy         headerdir_sourcefile_strategy;
 HeaderfileSourcedirStrategy         headerfile_sourcedir_strategy;
+HeaderfileSourcefileStrategy        headerfile_sourcefile_strategy;
 }
 
 FileStrategy::~FileStrategy()
@@ -46,13 +48,17 @@ FileStrategy* FileStrategy::GetStrategy()
             strategy = &headerdir_sourcedir_strategy;
         }
     }
-    else if (is_header_dir && !is_source_dir)
+    else if (is_header_dir && is_source_regular_file)
     {
         strategy = &headerdir_sourcefile_strategy;
     }
-    else if (!is_header_dir && is_source_dir)
+    else if (is_header_regualr_file && is_source_dir)
     {
         strategy = &headerfile_sourcedir_strategy;
+    }
+    else if (is_header_regualr_file && !is_source_dir)
+    {
+        strategy = &headerfile_sourcefile_strategy;
     }
 
     return strategy;

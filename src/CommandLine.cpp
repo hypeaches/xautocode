@@ -78,7 +78,7 @@ void CommandLine::Parse(int argc, char* argv[])
     if (vm.count("header"))
     {
         cmd_header = vm["header"].as<std::string>();
-        if (!cmd_header.empty() && (cmd_header.back() != '/'))
+        if ((cmd_header.find_last_of('.') != (cmd_header.size() - 2)) && !cmd_header.empty() && (cmd_header.back() != '/'))
         {
             cmd_header.append("/");
         }
@@ -86,7 +86,7 @@ void CommandLine::Parse(int argc, char* argv[])
     if (vm.count("source"))
     {
         cmd_source = vm["source"].as<std::string>();
-        if (!cmd_source.empty() && (cmd_source.back() != '/'))
+        if ((cmd_source.find_last_of('.') != (cmd_source.size() - 2)) && !cmd_source.empty() && (cmd_source.back() != '/'))
         {
             cmd_source.append("/");
         }
