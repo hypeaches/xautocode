@@ -2,10 +2,12 @@
 #include <stdexcept>
 #include <boost/filesystem.hpp>
 #include <xautocode/CommandLine.h>
+#include <xautocode/FileStrategy/HeaderdirSourcedirStrategy.h>
 #include <xautocode/FileStrategy/HeaderdirSourcedirRecursiveStrategy.h>
 
 namespace
 {
+HeaderdirSourcedirStrategy          headerdir_sourcedir_strategy;
 HeaderdirSourcedirRecursiveStrategy headerdir_sourcedir_recursive_strategy;
 }
 
@@ -32,6 +34,7 @@ FileStrategy* FileStrategy::GetStrategy()
         }
         else
         {
+            strategy = &headerdir_sourcedir_strategy;
         }
     }
 
