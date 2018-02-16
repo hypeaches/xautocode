@@ -2,6 +2,15 @@
 #include <xautocode/CommandLine.h>
 #include <boost/filesystem.hpp>
 
+bool SourcedirStrategy::GetNextSourceFile(const std::string& header_file, std::string& source_file)
+{
+    source_file.clear();
+    std::string relative = header_file.substr(_source_relative_path.size(), header_file.size() - _source_relative_path.size() - 2);
+    source_file.append(CommandLine::source).append(relative).append(CommandLine::ext);
+    bool ret = !boost::filesystem::exists(source_file);
+    return ret;
+}
+
 void SourcedirStrategy::GetSourceRelativePath()
 {
     if (CommandLine::tight)
