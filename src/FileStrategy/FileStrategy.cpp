@@ -64,7 +64,7 @@ FileStrategy* FileStrategy::GetStrategy()
     return strategy;
 }
 
-bool FileStrategy::GetFile(std::string& header_file, std::string& source_file)
+bool FileStrategy::GetFile(std::string& header_file, std::string& source_file, std::string& include_string)
 {
     bool ret = false;
     header_file.clear();
@@ -76,6 +76,11 @@ bool FileStrategy::GetFile(std::string& header_file, std::string& source_file)
             break;
         }
         ret = GetNextSourceFile(header_file, source_file);
+        if (!ret)
+        {
+            break;
+        }
+        ret = GetIncludeString(header_file, include_string);
     }
     return ret;
 }
@@ -94,3 +99,7 @@ bool FileStrategy::GetNextSourceFile(const std::string& header_file, std::string
     return false;
 }
 
+bool FileStrategy::GetIncludeString(const std::string& header_file, std::string& include_string)
+{
+    return false;
+}

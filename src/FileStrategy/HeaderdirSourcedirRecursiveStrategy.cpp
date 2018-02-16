@@ -29,3 +29,10 @@ bool HeaderdirSourcedirRecursiveStrategy::GetNextHeaderFile(std::string& header_
     return ret;
 }
 
+bool HeaderdirSourcedirRecursiveStrategy::GetIncludeString(const std::string& header_file, std::string& include_string)
+{
+    include_string.clear();
+    include_string.append(header_file.substr(strlen(CommandLine::header)));
+    return true;
+}
+

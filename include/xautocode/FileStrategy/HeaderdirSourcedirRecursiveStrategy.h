@@ -11,6 +11,7 @@ public:
 
 protected:
     virtual bool GetNextHeaderFile(std::string& header_file);
+    virtual bool GetIncludeString(const std::string& header_file, std::string& include_string);
 
 private:
     boost::filesystem::recursive_directory_iterator _it;
