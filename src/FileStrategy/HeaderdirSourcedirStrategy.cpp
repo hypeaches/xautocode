@@ -29,3 +29,10 @@ bool HeaderdirSourcedirStrategy::GetNextHeaderFile(std::string& header_file)
     return ret;
 }
 
+bool HeaderdirSourcedirStrategy::GetIncludeString(const std::string& header_file, std::string& include_string)
+{
+    include_string.clear();
+    include_string.append(header_file.substr(strlen(CommandLine::header)));
+    return true;
+}
+
