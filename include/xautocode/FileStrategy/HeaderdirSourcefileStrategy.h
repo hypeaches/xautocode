@@ -6,11 +6,7 @@
 class HeaderdirSourcefileStrategy : public FileStrategy
 {
 public:
-    virtual ~HeaderdirSourcefileStrategy();
-    virtual void Work();
-
-protected:
-    virtual bool GetFile(std::string& header_file, std::string& source_file);
+    virtual void Init();
 };
 
 #endif // XAUTOCODE_FILESTRATEGY_HEADERDIRSOURCEFILESTRATEGY_H

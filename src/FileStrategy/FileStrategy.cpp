@@ -4,11 +4,13 @@
 #include <xautocode/CommandLine.h>
 #include <xautocode/FileStrategy/HeaderdirSourcedirStrategy.h>
 #include <xautocode/FileStrategy/HeaderdirSourcedirRecursiveStrategy.h>
+#include <xautocode/FileStrategy/HeaderdirSourcefileStrategy.h>
 
 namespace
 {
 HeaderdirSourcedirStrategy          headerdir_sourcedir_strategy;
 HeaderdirSourcedirRecursiveStrategy headerdir_sourcedir_recursive_strategy;
+HeaderdirSourcefileStrategy         headerdir_sourcefile_strategy;
 }
 
 FileStrategy::~FileStrategy()
@@ -18,11 +20,16 @@ FileStrategy::~FileStrategy()
 FileStrategy* FileStrategy::GetStrategy()
 {
     bool is_header_dir = boost::filesystem::is_directory(CommandLine::header);
+    bool is_header_regualr_file = boost::filesystem::is_regular_file(CommandLine::header);
     bool is_source_dir = boost::filesystem::is_directory(CommandLine::source);
     bool is_source_regular_file = boost::filesystem::is_regular_file(CommandLine::source);
-    if (!is_source_dir && !is_source_regular_file)
+    //if (!is_source_dir && !is_source_regular_file)
+    //{
+    //    throw std::logic_error("source is not a directory or a regular file");
+    //}
+    if (!is_header_dir && !is_header_regualr_file)
     {
-        throw std::logic_error("source is not a directory or a regular file");
+        throw std::logic_error("header is not a directory or a regualr file");
     }
 
     FileStrategy* strategy = nullptr;
@@ -36,6 +43,10 @@ FileStrategy* FileStrategy::GetStrategy()
         {
             strategy = &headerdir_sourcedir_strategy;
         }
+    }
+    if (is_header_dir && !is_source_dir)
+    {
+        strategy = &headerdir_sourcefile_strategy;
     }
 
     return strategy;
