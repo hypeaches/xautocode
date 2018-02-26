@@ -6,16 +6,14 @@
 class SourceFile
 {
 public:
-    FILE* file()
-    {
-        return _file;
-    }
-    bool Exist(const char* file_name);
-    bool Open(const char* file_name);
+    void Open(const char* file_name);
+    int  Write(const char* return_type, const char* class_name, const char* function);
+    int  WriteNamespace(const char* name_space);
     void Close();
 
 private:
     FILE* _file;
+    int _left_brace_count;
 };
 
 #endif // XAUTOCODE_GENERATOR_SOURCEFILE_H

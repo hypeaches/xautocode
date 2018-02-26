@@ -9,7 +9,7 @@ class CodeGenerator
 public:
     CodeGenerator();
     ~CodeGenerator();
-    void Work(const char* header_file_name, const char* source_file_name);
+    void Work(const char* header_file_name, const char* source_file_name, const char* include_string);
 
 private:
     HeaderFile* _header_file;
