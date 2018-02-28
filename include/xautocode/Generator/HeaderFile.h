@@ -17,17 +17,18 @@ public:
     bool ReadLine();
 
 private:
+    void ParseNamespaceEnd();
     bool DoReadLine();
     bool IsFunction();
-    void Trim();
-    void TrimLeft();
-    void TrimRight();
+    char* Trim(char* str);
+    char* TrimLeft(char* str);
+    char* TrimRight(char* str);
     FILE* _file;
     char* ParseReturnType();
     char* ParseFunction();
     char* _head;
     int _line_length;
-    char* _buffer[4 * 1024];
+    char _buffer[4 * 1024];
     char _class_name[32];
     char _name_space[32];
     char _name_space_end[32];
