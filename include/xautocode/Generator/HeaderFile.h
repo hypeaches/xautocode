@@ -24,6 +24,7 @@ private:
     char* TrimLeft(char* str);
     char* TrimRight(char* str);
     FILE* _file;
+    char* ClearRedundant();
     char* ParseReturnType();
     char* ParseFunction();
     char* _head;
