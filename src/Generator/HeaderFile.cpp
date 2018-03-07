@@ -1,5 +1,6 @@
 #include <xautocode/Generator/HeaderFile.h>
 #include <cstring>
+#include <string>
 #include <xautocode/Generator/FileException.h>
 
 void HeaderFile::Open(const char* file_name)
@@ -49,6 +50,7 @@ void HeaderFile::ParseNamespaceEnd()
         next = strchr(next + 1, '{');
     }
     *nse = 0;
+    name_space_end = _name_space_end;
 }
 
 char* HeaderFile::ParseClassName()
@@ -106,6 +108,7 @@ bool HeaderFile::ReadLine()
         {
             ret = true;
             ClearRedundant();
+            ParseFunctionType();
             ParseReturnType();
             ParseFunction();
             break;
@@ -122,6 +125,7 @@ bool HeaderFile::DoReadLine()
     }
     fgets(_buffer, sizeof(_buffer), _file);
     _line_length = strlen(_buffer);
+    _head = _buffer;
     return true;
 }
 
@@ -133,6 +137,34 @@ bool HeaderFile::IsFunction()
         ret = true;
     }
     return ret;
+}
+
+char* HeaderFile::ParseFunctionType()
+{
+    _function_type = HeaderFile::ft_none;
+    char* cur = _head;
+    if (!cur || strlen(cur) == 0)
+    {
+        return nullptr;
+    }
+
+    if (cur[0] == '~')
+    {
+        _function_type = HeaderFile::ft_deconstructor;
+        return _head;
+    }
+    if (strstr(cur, class_name) == cur)
+    {
+        cur += strlen(class_name);
+        cur = TrimLeft(cur);
+        if (cur && (strlen(cur) != 0) && (cur[0] == '('))
+        {
+            _function_type = HeaderFile::ft_constructor;
+        }
+        return _head;
+    }
+    _function_type = HeaderFile::ft_normal;
+    return _head;
 }
 
 char* HeaderFile::Trim(char* str)
@@ -190,6 +222,23 @@ char* HeaderFile::TrimRight(char* str)
     return str;
 }
 
+char* HeaderFile::MoveToNextWord(char* str)
+{
+    bool next = true;
+    char* tail = str + strlen(str);
+    while ((str < tail) && next)
+    {
+        if ((*str == ' ') || (*str == '\t') || (*str == '\n'))
+        {
+            next = false;
+            *str = 0;
+            ++str;
+            str = TrimLeft(str);
+        }
+    }
+    return str;
+}
+
 char* HeaderFile::ClearRedundant()
 {
     char* dest = strstr(_head, "virtual");
@@ -206,27 +255,45 @@ char* HeaderFile::ClearRedundant()
     return _head;
 }
 
-char* HeaderFile::ParseReturnType()
+namespace
 {
-    //构造函数、析构函数、普通函数
-    char* cur = _head;
-    char* tail = _head + strlen(_head);
-    while (cur < tail)
+    std::string empty_string;
+}
+
+const char* HeaderFile::ParseReturnType()
+{
+    switch (_function_type)
     {
-        if ((*cur != ' ') && (*cur != '\t'))
-        {
-            ++cur;
-        }
-        else
-        {
-            return_type = _head;
-            *cur = 0;
+        case ft_none:
+            return_type = nullptr;
             break;
-        }
+        case ft_constructor:
+        case ft_deconstructor:
+            return_type = empty_string.c_str();
+            break;
+        case ft_normal:
+            return_type = _head;
+            break;
     }
     return return_type;
 }
 
-char* HeaderFile::ParseFunction()
+const char* HeaderFile::ParseFunction()
 {
+    switch (_function_type)
+    {
+    case ft_none:
+        function = nullptr;
+        break;
+    case ft_constructor:
+    case ft_deconstructor:
+        function = _head;
+        break;
+    case ft_normal:
+        function = MoveToNextWord(_head);
+        break;
+    }
+    _head = strrchr(_head, ';');
+    *_head = 0;
+    return function;
 }

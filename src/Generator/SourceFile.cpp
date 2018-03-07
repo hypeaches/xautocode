@@ -1,10 +1,13 @@
 #include <xautocode/Generator/SourceFile.h>
 #include <cstring>
 #include <stdexcept>
+#include <xautocode/CommandLine.h>
 #include <xautocode/Generator/FileException.h>
+#include <boost/filesystem.hpp>
 
 void SourceFile::Open(const char* file_name)
 {
+    CreateParentDirectory(file_name);
     _left_brace_count = 0;
     _file = fopen(file_name, "wa");
     if (!_file)
@@ -13,24 +16,43 @@ void SourceFile::Open(const char* file_name)
     }
 }
 
+int SourceFile::Write(const char* str)
+{
+    int len = fprintf(_file, "%s\n\n", str);
+    return len;
+}
+
 int SourceFile::Write(const char* return_type, const char* class_name, const char* function)
 {
-    int len = fprintf(_file, "%s %s::%s\n{\n}\n\n", return_type, class_name, function);
+    int len = 0;
+    if (CommandLine::left_brace_pos)
+    {
+        fprintf(_file, "%s %s::%s\n{\n}\n\n", return_type, class_name, function);
+    }
+    else
+    {
+        fprintf(_file, "%s %s::%s {\n}\n\n", return_type, class_name, function);
+    }
     return len;
 }
 
 int SourceFile::WriteNamespace(const char* name_space)
 {
-    int len = strlen(name_space);
-    if (len)
+    int len = 0;
+    const char& c = name_space[strlen(name_space) - 1];
+    if (c == '{')
     {
         len = fprintf(_file, "%s\n\n", name_space);
-        const char* left_brace = strchr(name_space, '{');
-        while (left_brace)
+    }
+    else
+    {
+        if (CommandLine::left_brace_pos)
         {
-            _left_brace_count++;
-            ++left_brace;
-            left_brace = strchr(left_brace, '{');
+            len = fprintf(_file, "%s\n{\n\n", name_space);
+        }
+        else
+        {
+            len = fprintf(_file, "%s {\n\n", name_space);
         }
     }
     return len;
@@ -38,9 +60,15 @@ int SourceFile::WriteNamespace(const char* name_space)
 
 void SourceFile::Close()
 {
-    for (int i = 0; i < _left_brace_count; ++i)
-    {
-        fprintf(_file, "}");
-    }
     fclose(_file);
+}
+
+void SourceFile::CreateParentDirectory(const char* file_name)
+{
+    boost::filesystem::path file(file_name);
+    boost::filesystem::path parent = file.parent_path();
+    if (!boost::filesystem::exists(parent))
+    {
+        boost::filesystem::create_directories(parent);
+    }
 }

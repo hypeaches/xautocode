@@ -3,6 +3,22 @@
 #include <xautocode/Generator/HeaderFile.h>
 #include <xautocode/Generator/SourceFile.h>
 
+namespace
+{
+    HeaderFile hf;
+    SourceFile sf;
+}
+
+CodeGenerator::CodeGenerator()
+{
+    _header_file = &hf;
+    _source_file = &sf;
+}
+
+CodeGenerator::~CodeGenerator()
+{
+}
+
 void CodeGenerator::Work(const char* header_file_name, const char* source_file_name, const char* include_string)
 {
     _header_file->Open(header_file_name);
@@ -16,6 +32,7 @@ void CodeGenerator::Work(const char* header_file_name, const char* source_file_n
     {
         _source_file->Write(_header_file->return_type, _header_file->class_name, _header_file->function);
     }
+    _source_file->Write(_header_file->name_space_end);
 
     _header_file->Close();
     _source_file->Close();
