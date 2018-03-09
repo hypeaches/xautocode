@@ -34,6 +34,14 @@ char* HeaderFile::ParseNamespace()
         }
         next_line = DoReadLine();
     }
+    if (!next_line)
+    {
+        _file = freopen(NULL, "r", _file);
+        if (!_file)
+        {
+            throw FileException("\treopen", "open");
+        }
+    }
     return _name_space;
 }
 
@@ -176,13 +184,11 @@ char* HeaderFile::Trim(char* str)
 
 char* HeaderFile::TrimLeft(char* str)
 {
-    char c = 0;
     bool next = true;
     char* tail = str + strlen(str);
     while ((str < tail) && next)
     {
-        c = *tail;
-        if ((c == ' ') || (c == '\t'))
+        if ((*str == ' ') || (*str == '\t') || (*str == '\r') || (*str == '\n'))
         {
             ++str;
         }
