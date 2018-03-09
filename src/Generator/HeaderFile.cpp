@@ -127,20 +127,21 @@ bool HeaderFile::ReadLine()
 
 bool HeaderFile::DoReadLine()
 {
+    _buffer[0] = 0;
+    _head = _buffer;
     if (feof(_file) || ferror(_file))
     {
         return false;
     }
     fgets(_buffer, sizeof(_buffer), _file);
     _line_length = strlen(_buffer);
-    _head = _buffer;
     return true;
 }
 
 bool HeaderFile::IsFunction()
 {
     bool ret = false;
-    if (strchr(_head, '(') && strchr(_head, ')') && !strstr(_head, "typedef") && !strstr(_head, "using"))
+    if (_head && strchr(_head, '(') && strchr(_head, ')') && !strstr(_head, "typedef") && !strstr(_head, "using"))
     {
         ret = true;
     }

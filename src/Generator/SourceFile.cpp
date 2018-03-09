@@ -39,7 +39,11 @@ int SourceFile::Write(const char* return_type, const char* class_name, const cha
 int SourceFile::WriteNamespace(const char* name_space)
 {
     int len = 0;
-    const char& c = name_space[strlen(name_space) - 1];
+    if (!name_space || ((len = strlen(name_space)) == 0))
+    {
+        return 0;
+    }
+    const char& c = name_space[len - 1];
     if (c == '{')
     {
         len = fprintf(_file, "%s\n\n", name_space);
