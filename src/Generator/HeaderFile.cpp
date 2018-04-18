@@ -20,6 +20,7 @@ void HeaderFile::Close()
 char* HeaderFile::ParseNamespace()
 {
     _name_space[0] = 0;
+    name_space = _name_space;
     bool next_line = DoReadLine();
     while (next_line)
     {
@@ -47,6 +48,7 @@ char* HeaderFile::ParseNamespace()
 
 void HeaderFile::ParseNamespaceEnd()
 {
+    name_space_end = _name_space_end;
     char* nse = _name_space_end;
     int _left_brace_count = 0;
     char* next = strchr(_head, '{');
@@ -58,12 +60,12 @@ void HeaderFile::ParseNamespaceEnd()
         next = strchr(next + 1, '{');
     }
     *nse = 0;
-    name_space_end = _name_space_end;
 }
 
 char* HeaderFile::ParseClassName()
 {
     _class_name[0] = 0;
+    class_name = _class_name;
     char* dest = nullptr;
     bool next = DoReadLine();
     while (next)
@@ -141,7 +143,11 @@ bool HeaderFile::DoReadLine()
 bool HeaderFile::IsFunction()
 {
     bool ret = false;
-    if (_head && strchr(_head, '(') && strchr(_head, ')') && !strstr(_head, "typedef") && !strstr(_head, "using"))
+    if (!_head || (_head[0] == '/'))
+    {
+        ret = false;
+    }
+    else if (_head && strchr(_head, '(') && strchr(_head, ')') && !strstr(_head, "typedef") && !strstr(_head, "using"))
     {
         ret = true;
     }
@@ -162,7 +168,7 @@ char* HeaderFile::ParseFunctionType()
         _function_type = HeaderFile::ft_deconstructor;
         return _head;
     }
-    if (strstr(cur, class_name) == cur)
+    if (cur && class_name && strstr(cur, class_name) == cur)
     {
         cur += strlen(class_name);
         cur = TrimLeft(cur);
@@ -207,6 +213,10 @@ char* HeaderFile::TrimLeft(char* str)
 
 char* HeaderFile::TrimRight(char* str)
 {
+    if (!str || !strlen(str))
+    {
+        return str;
+    }
     char c = 0;
     bool next = true;
     char* tail = str + strlen(str) - 1;
@@ -239,9 +249,8 @@ char* HeaderFile::MoveToNextWord(char* str)
         {
             next = false;
             *str = 0;
-            ++str;
-            str = TrimLeft(str);
         }
+        ++str;
     }
     return str;
 }
@@ -300,7 +309,14 @@ const char* HeaderFile::ParseFunction()
         function = MoveToNextWord(_head);
         break;
     }
-    _head = strrchr(_head, ';');
-    *_head = 0;
+    _head = const_cast<char*>(function);
+    if (_head)
+    {
+        _head = strrchr(_head, ';');
+    }
+    if (_head)
+    {
+        *_head = 0;
+    }
     return function;
 }

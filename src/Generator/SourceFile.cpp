@@ -18,7 +18,11 @@ void SourceFile::Open(const char* file_name)
 
 int SourceFile::Write(const char* str)
 {
-    int len = fprintf(_file, "%s\n\n", str);
+    int len = 0;
+    if (str)
+    {
+        len = fprintf(_file, "%s\n\n", str);
+    }
     return len;
 }
 
