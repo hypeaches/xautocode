@@ -26,8 +26,11 @@ void CodeGenerator::Work(const char* header_file_name, const char* source_file_n
     
     _header_file->ParseNamespace();
     _header_file->ParseClassName();
-    _source_file->WriteNamespace(_header_file->name_space);
 
+    char buf[1024];
+    snprintf(buf, sizeof(buf), "include <%s>\n", include_string);
+    _source_file->Write(buf);
+    _source_file->WriteNamespace(_header_file->name_space);
     while(_header_file->ReadLine())
     {
         _source_file->Write(_header_file->return_type, _header_file->class_name, _header_file->function);

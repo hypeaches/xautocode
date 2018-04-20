@@ -1,5 +1,6 @@
 #include <xautocode/Generator/HeaderFile.h>
 #include <cstring>
+#include <regex>
 #include <string>
 #include <xautocode/Generator/FileException.h>
 
@@ -62,21 +63,40 @@ void HeaderFile::ParseNamespaceEnd()
     *nse = 0;
 }
 
+void HeaderFile::RemoveRight()
+{
+    int len = strlen(_name_space);
+    if (len > 0)
+    {
+        --len;
+    }
+    char* tail = _name_space + len;
+    for (; (tail > _name_space) && ((*tail == '\n' || *tail == '\r')); --tail)
+    {
+        *tail = 0;
+    }
+}
+
 char* HeaderFile::ParseClassName()
 {
     _class_name[0] = 0;
     class_name = _class_name;
     char* dest = nullptr;
     bool next = DoReadLine();
+    std::cmatch m;
+    std::regex r("(class|struct)\\s+\\S+\\s*;\\s*\\n");
     while (next)
     {
-        if (!!(dest = strstr(_head, "class")))
+        if (!std::regex_match(_head, r))
         {
-            break;
-        }
-        else if (!!(dest = strstr(_head, "struct")))
-        {
-            break;
+	        if (!!(dest = strstr(_head, "class")))
+	        {
+	            break;
+	        }
+	        else if (!!(dest = strstr(_head, "struct")))
+	        {
+	            break;
+	        }
         }
         next = DoReadLine();
     }
@@ -137,6 +157,7 @@ bool HeaderFile::DoReadLine()
     }
     fgets(_buffer, sizeof(_buffer), _file);
     _line_length = strlen(_buffer);
+    RemoveRight();
     return true;
 }
 

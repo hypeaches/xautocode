@@ -25,6 +25,7 @@ private:
         ft_deconstructor,
         ft_normal
     };
+    void RemoveRight();
     void ParseNamespaceEnd();
     bool DoReadLine();
     bool IsFunction();
@@ -41,7 +42,7 @@ private:
     int _line_length;
     char _buffer[4 * 1024];
     char _class_name[32];
-    char _name_space[32];
+    char _name_space[2048];
     char _name_space_end[32];
     FunctionType _function_type;
 };
