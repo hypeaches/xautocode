@@ -16,6 +16,7 @@ int         CommandLine::left_brace_pos = 0;
 
 namespace {
     boost::program_options::options_description desc("Options");
+    const char  version[] = "0.1.0";
     bool        cmd_recursive = false;
     bool        cmd_tight     = true;
     std::string cmd_include_prefix("");
@@ -32,6 +33,7 @@ void CommandLine::Parse(int argc, char* argv[])
 {
     desc.add_options()
         ("help", "帮助")
+        ("version,v", "版本")
         ("recursive,r", boost::program_options::value<bool>(), "是否递归遍历header，默认值：false")
         ("tight,t", boost::program_options::value<bool>(), "紧凑型，默认值：true")
         ("include-prefix", boost::program_options::value<std::string>(), "头文件相对目录，默认值：空")
@@ -47,7 +49,12 @@ void CommandLine::Parse(int argc, char* argv[])
 
     if (vm.count("help") || (argc == 1))
     {
-        std::cout<<desc<<std::endl;
+        std::cout<<desc;
+        exit(0);
+    }
+    if (vm.count("version"))
+    {
+        std::cout<<version;
         exit(0);
     }
 

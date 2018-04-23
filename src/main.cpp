@@ -25,14 +25,15 @@ int main(int argc, char* argv[])
         source_file.reserve(1024);
         include_string.reserve(1024);
 
+        int count = 1;
         CodeGenerator cd;
         while (strategy->GetFile(header_file, source_file, include_string))
         {
-            printf("header:%s\n"
+            printf("=====file %d=====\n"
+               "header:%s\n"
                "source:%s\n"
-               "include:%s\n"
                "======================\n",
-               header_file.c_str(), source_file.c_str(), include_string.c_str());
+               count++, header_file.c_str(), source_file.c_str());
             cd.Work(header_file.c_str(), source_file.c_str(), include_string.c_str());
         }
         ret = 0;
